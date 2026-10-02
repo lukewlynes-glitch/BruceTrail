@@ -40,6 +40,40 @@ button.on{background:linear-gradient(92deg,var(--blue),var(--teal));border-color
 
 .wrap{display:grid;grid-template-columns:minmax(400px,2fr) 3fr;gap:20px;padding:20px 30px 40px;align-items:start}
 @media(max-width:1100px){.wrap{grid-template-columns:1fr}#map{height:420px!important;position:static!important}}
+/* ---------- phone ---------- */
+@media(max-width:700px){
+  header{padding:20px 16px 14px}
+  h1{font-size:23px}
+  .sub{font-size:12.5px}
+  .bar{padding:12px 16px;gap:6px}
+  .bar .lab{width:100%;margin:2px 0}
+  button{padding:9px 13px;font-size:12px}
+  .legend{padding:10px 16px 0;gap:10px;font-size:10.5px}
+  .wrap{padding:14px 16px 30px;gap:14px}
+  .list{max-height:none;overflow:visible;padding-right:0;gap:12px}
+  /* The overview map goes LAST on a phone, not first. Putting it on top pushed
+     the actual list below the fold and ate the screen - and every card already
+     carries its own trail map, so the overview is reference, not the headline.
+     Nothing is sticky here either, so the whole page scrolls as one piece. */
+  .wrap{display:flex;flex-direction:column}
+  .list{order:1}
+  #map{order:2;height:260px!important;position:static!important}
+  .maplab{order:2;display:block;font-size:10.5px;letter-spacing:.12em;color:#8da2c8;
+          text-transform:uppercase;margin:6px 0 -6px}
+  .photo{height:185px}
+  .rankbadge{width:34px;height:34px;font-size:16px;top:9px;left:9px}
+  .scorebadge{padding:5px 9px;top:9px;right:9px}
+  .scorebadge b{font-size:15px}
+  .body{padding:13px 14px 15px}
+  .nm{font-size:16px}
+  .stats{gap:6px;margin:10px 0 9px}
+  .st{padding:5px 8px;font-size:11px}
+  .mini{height:210px}                        /* taller: a 170px map is unusable on a phone */
+  .why,.swim,.note{font-size:13.5px}
+  .links{gap:6px}
+  .links a{flex:1 1 calc(50% - 3px);text-align:center;padding:11px 8px;font-size:11px}
+}
+@media(max-width:380px){.links a{flex:1 1 100%}}
 
 .list{display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 230px);overflow-y:auto;padding-right:6px}
 .list::-webkit-scrollbar{width:8px}
@@ -130,6 +164,7 @@ button.on{background:linear-gradient(92deg,var(--blue),var(--teal));border-color
 .leaflet-popup-content img{width:100%;border-radius:7px;margin-bottom:7px}
 
 .legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 30px 0;color:var(--dim);font-size:11.5px}
+.maplab{display:none}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 footer{padding:22px 30px 34px;color:var(--dim);font-size:11.5px;border-top:1px solid var(--line);margin-top:10px}
 footer b{color:#f87171}
@@ -167,6 +202,7 @@ footer b{color:#f87171}
 
 <div class="wrap">
   <div class="list" id="list"></div>
+  <div class="maplab">All 11 on one map</div>
   <div id="map"></div>
 </div>
 
