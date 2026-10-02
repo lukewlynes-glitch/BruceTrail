@@ -15,6 +15,16 @@
   --txt:#e8eeff; --dim:#8da2c8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+/* Phone render was scrolling sideways and clipping the header and the MAP tab.
+   Flex and grid children default to min-width:auto, so a wide child (the stats
+   chips, a long title, the map pane) pushes the whole page wider than the screen
+   instead of wrapping. These three lines stop that at the root. */
+html,body{max-width:100%;overflow-x:hidden}
+.wrap,.list,.card,.body,.bar,.legend,header,.vswitch,.stats,.tags,.links{min-width:0;max-width:100%}
+img,svg,.mini,#map{max-width:100%}
+/* Long names and the Majic-style run-on strings were the thing pushing the line
+   box past the screen; break them rather than let them widen the page. */
+.nm,.sub,.why,.swim,.note,.loc,h1{overflow-wrap:break-word;word-break:normal}
 body{
   background:var(--bg); color:var(--txt);
   font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -165,6 +175,25 @@ button.on{background:linear-gradient(92deg,var(--blue),var(--teal));border-color
 
 .legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 30px 0;color:var(--dim);font-size:11.5px}
 .maplab{display:none}
+.vswitch{display:none}
+@media(max-width:700px){
+  /* On a phone the list and the map fight for the screen and neither wins, so
+     they become two views instead of two panes. Default is the list - that is
+     what people came for; the map is for orienting yourself afterwards. */
+  .vswitch{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;margin:12px 16px 0;
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  }
+  .vswitch button{
+    border:0;border-radius:0;padding:13px 10px;font-size:11.5px;letter-spacing:.09em;
+    background:rgba(10,16,42,.6);
+  }
+  .vswitch button.on{background:linear-gradient(92deg,var(--blue),var(--teal));color:#061024}
+  body.v-map .list,body.v-map .maplab{display:none}
+  body.v-list #map{display:none}
+  body.v-map #map{height:calc(100vh - 215px)!important;min-height:360px}
+  body.v-map .legend{display:none}
+}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 footer{padding:22px 30px 34px;color:var(--dim);font-size:11.5px;border-top:1px solid var(--line);margin-top:10px}
 footer b{color:#f87171}
@@ -198,6 +227,11 @@ footer b{color:#f87171}
   <span><i style="background:#00d4ff"></i>Waterfall</span>
   <span><i style="background:#22c55e"></i>Swimming on site</span>
   <span><i style="background:#f87171"></i>Reservation required</span>
+</div>
+
+<div class="vswitch" id="vswitch" role="tablist" aria-label="View">
+  <button class="on" data-v="list" role="tab" aria-selected="true">TOP 10 TRAILS</button>
+  <button data-v="map" role="tab" aria-selected="false">MAP</button>
 </div>
 
 <div class="wrap">
@@ -491,6 +525,21 @@ document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('[data-s]').forEach(x=>x.classList.remove('on'));
   b.classList.add('on');sort=b.dataset.s;render();
 });
+document.body.classList.add('v-list');
+document.querySelectorAll('#vswitch button').forEach(b=>b.onclick=()=>{
+  const v=b.dataset.v;
+  document.querySelectorAll('#vswitch button').forEach(x=>{
+    x.classList.toggle('on',x===b);
+    x.setAttribute('aria-selected',x===b);
+  });
+  document.body.classList.toggle('v-map',v==='map');
+  document.body.classList.toggle('v-list',v==='list');
+  if(v==='map'){
+    setTimeout(()=>{map.invalidateSize();render();},80);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
 render();
 </script>
 </body>
